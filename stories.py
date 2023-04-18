@@ -44,14 +44,25 @@ def get_story_titles(category):
     titles = []
     for i in stories.keys():
         if(stories[i]['Category'] == category):
-            titles.append(stories[i]['Title'])
+            titles.append({"title": stories[i]['Title'], "bookno": i})
     return jsonify({"titles": titles})
 
-@app.route('/get-all-stories')
-def get_users():
+
+
+
+@app.route('/get-story/<bookno>')
+def get_story(bookno):
     """ 
     This method fetches all the stories and returns.
     """
+    # bookno = ''
+    # for i in stories.keys():
+    #     if(stories[i]['Title'] == name):
+    #         bookno = i
+    try:
+        return jsonify({"story": stories[bookno]['content'], "bookno":bookno})
+    except KeyError:
+        return jsonify({"msg":"Error"})
 
 
 # @app.route('/signup', methods=['POST'])

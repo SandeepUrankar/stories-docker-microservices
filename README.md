@@ -1,4 +1,4 @@
-# Stories Docker Microservices
+# Stories Docker Microservices 🚢⚓⚒️
 Dockerized microservices for my [short stories app](https://github.com/SandeepUrankar/LetMeTellYouAStory).
 - User information is stored and retrieved from MongoDB.
 - User can login or signup.

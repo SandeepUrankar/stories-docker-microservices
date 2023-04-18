@@ -39,8 +39,13 @@ def signup():
     data = request.json
     username = data['username']
     password = data['password']
-    user = {"user": username, "pass": password}
     _db = get_db()
+    _users = _db['users'].find()
+    users = [{"id": user["_id"], "username": user["username"], "password": user["password"]} for user in _users]
+    for user in users:
+        if user['username'] == username:
+            return jsonify({'message': f'User with {username} already exists.'})
+    user = {"username": username, "password": password, "history": []}
     users = _db.users
     users.insert_one(user)
     return jsonify({"message": f'User with {username} created.'})

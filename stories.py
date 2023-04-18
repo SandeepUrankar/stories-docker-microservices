@@ -1,6 +1,7 @@
-import datetime
 import pickle
 from flask import Flask, jsonify, request
+from pymongo import MongoClient
+import db
 
 
 # Global Variables
@@ -12,6 +13,11 @@ global categories
 categories = set()
 global app
 app = Flask(__name__)
+
+
+def get_db():
+    return db.get_db()
+
 
 
 def load_data():
@@ -50,19 +56,34 @@ def get_story_titles(category):
 
 
 
-@app.route('/get-story/<bookno>')
-def get_story(bookno):
+@app.route('/get-story', methods=['POST'])
+def get_story():
     """ 
     This method fetches all the stories and returns.
     """
-    # bookno = ''
-    # for i in stories.keys():
-    #     if(stories[i]['Title'] == name):
-    #         bookno = i
-    try:
-        return jsonify({"story": stories[bookno]['content'], "bookno":bookno})
-    except KeyError:
-        return jsonify({"msg":"Error"})
+    _db = MongoClient()
+    _db = get_db()
+    data = request.json
+    
+    # try:
+    bookno = data['bookno']
+    story = {"story": stories[bookno]['content'], "bookno":bookno}
+    username = data['username']
+    _users = _db['users'].find()
+    users = [{"id": user["_id"], "username": user["username"], "password": user["password"], "history": user['history']} for user in _users]
+    user = None
+    for _user in users:
+        if _user['username'] == username:
+            user = _user
+    print('------------HERE---------------')
+    print(user)
+    history = user['history']
+    print(type(history))
+    history.append(bookno)
+    _db['users'].update_one({"username":username}, {'$set':{"history": history}})
+    return jsonify(story)
+    # except KeyError:
+    #     return jsonify({"msg":"Error"})
 
 
 # @app.route('/signup', methods=['POST'])

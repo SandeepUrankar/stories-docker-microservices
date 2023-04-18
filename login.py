@@ -25,7 +25,7 @@ def ping():
 def get_users():
     db=None
     try:
-        post = {"name": "sandeep", "pass":"Sandeep@123"}
+        post = {"username": "sandeep", "password":"Sandeep@123"}
         db = get_db()
         # users_collection = db.users
         # user_id = users_collection.insert_one(post)
@@ -43,11 +43,11 @@ def login():
     data = request.json
     db = get_db()
     _users = db['users'].find()
-    users = [{"id": user["_id"], "name": user["user"], "pass": user["pass"]} for user in _users]
+    users = [{"id": user["_id"], "username": user["username"], "password": user["password"]} for user in _users]
     msg = "User not found."
     for user in users:
-        if user["name"] == data['username']:
-            if user['pass'] == data['password']:
+        if user["username"] == data['username']:
+            if user['password'] == data['password']:
                 msg = "Login Success."
             else:
                 msg = "Wrong password."

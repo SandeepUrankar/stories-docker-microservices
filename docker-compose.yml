@@ -15,6 +15,14 @@ services:
       - "3001:3001"
     links:
       - db
+
+  stories:
+    build: .
+    
+    command: python3 -u stories.py
+    ports:
+      - "3002:3002"
+
   db:
     image: mongo:latest
     hostname: project_mongodb
